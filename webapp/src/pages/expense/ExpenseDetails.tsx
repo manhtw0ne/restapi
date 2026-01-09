@@ -19,7 +19,7 @@ const ExpenseDetails = () => {
       {errors && <p className="text-danger">{errors}</p>}
       <div className="d-flex flex-row-reverse mb-2">
         <button className="btn btn-sm btn-danger">Delete</button>
-        <button className="btn btn-sm btn-warning mx-2">Edit</button>
+        <button className="btn btn-sm btn-warning mx-2" onClick={() => Navigate(`/edit/${expenseId}`)}>Edit</button>
         <Link className="btn btn-sm btn-secondary" to="/">Back</Link>
       </div>
       <div className="card-body p-3">
