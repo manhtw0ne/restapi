@@ -2,6 +2,7 @@ package in.bushansirgur.restapi.config;
 
 
 import in.bushansirgur.restapi.service.CustomUserDetailService;
+import in.bushansirgur.restapi.service.TokenBlacklistService;
 import in.bushansirgur.restapi.util.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,11 +26,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         @Autowired
         private CustomUserDetailService userDetailService;
 
+        @Autowired
+        private TokenBlacklistService tokenBlacklistService;
+
         String jwtToken = null;
         String email = null;
 
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
+
+            if (jwtToken != null && tokenBlacklistService.isTokenBlacklisted(jwtToken)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
 
             try {
                 email = jwtTokenUtil.getUsernameFromToken(jwtToken);
